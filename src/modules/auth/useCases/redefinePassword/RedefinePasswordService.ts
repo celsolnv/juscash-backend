@@ -58,7 +58,7 @@ class RedefinePasswordService {
     );
 
     const redefineLink =
-      EnvSettings.FRONTEND_URL + `/auth/reset?code=${resetCode}&token=${token}`;
+      EnvSettings.FRONTEND_URL + `/redefinir-senha?code=${resetCode}&email=${user.email}`;
 
     await this.repository.updateResetCode(`${user.id}`, {
       resetCode,
@@ -66,7 +66,7 @@ class RedefinePasswordService {
       resetToken: token
     });
 
-    const logoUrl = `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3s8vetlzIrntl2S_5VaK0yvYtT9ng_DerHA&s`;
+    const logoUrl = `https://www.juscash.com.br/wp-content/themes/s3/assets/img/logo-white.svg`;
 
     const variables = {
       name: user.name,

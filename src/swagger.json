@@ -208,7 +208,7 @@
       }
     },
     "/api/auth/change/password": {
-      "patch": {
+      "post": {
         "summary": "Alterar senha do usuário - Painel web",
         "description": "Rota responsável por alterar senha do usuário - Painel Web",
         "tags": [
@@ -224,7 +224,11 @@
                     "type": "string",
                     "default": "codigo de recuperação"
                   },
-                  "newPassword": {
+                  "password": {
+                    "type": "string",
+                    "default": "nova senha"
+                  },
+                  "email": {
                     "type": "string",
                     "default": "nova senha"
                   }

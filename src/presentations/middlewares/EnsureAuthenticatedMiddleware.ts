@@ -6,7 +6,7 @@ import { UserTypeormRepository } from '../../modules/users/repositories/typeorm/
 import { send } from '../../libs/return';
 import { StatusEnum } from '../../entities/User';
 
-const EnsureAuthenticatedMiddleware = (recovery = false) => {
+const EnsureAuthenticatedMiddleware = () => {
   return async (request: Request, response: Response, next: NextFunction) => {
     try {
       const userRepository = new UserTypeormRepository();
@@ -58,27 +58,6 @@ const EnsureAuthenticatedMiddleware = (recovery = false) => {
           message: 'Usuário inativo',
           status: HttpStatus.UNAUTHORIZED
         });
-      }
-
-      if (payload.recovery && !recovery) {
-        throw new Error();
-      }
-
-      if (!payload.recovery && recovery) {
-        throw new Error();
-      }
-
-      if (recovery && payload.recovery) {
-        const userWithToken = await userRepository.findByEmail(
-          userExist.email,
-          true
-        );
-
-        const resetToken = userWithToken?.resetToken;
-
-        if (resetToken !== token) {
-          throw new Error();
-        }
       }
 
       request.user = {

@@ -59,10 +59,6 @@ export class UserTypeormRepository implements IUserRepository {
 
     qb.where('user.email = :email', { email });
 
-    qb.select([
-      'user',
-    ]);
-
     if (allowedPassword) {
       qb.addSelect('user.password');
       qb.addSelect('user.resetCode');

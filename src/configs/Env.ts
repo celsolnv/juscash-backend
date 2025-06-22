@@ -15,6 +15,7 @@ class EnvSettings {
     process.env.FRONTEND_URL || 'http://localhost:3000';
 
   // EMAIL
+  static readonly SMTP_SERVICE = process.env.SMTP_SERVICE as string;
   static readonly SMTP_HOST = process.env.SMTP_HOST as string;
   static readonly SMTP_PORT = process.env.SMTP_PORT as string;
   static readonly SMTP_USER = process.env.SMTP_USER as string;

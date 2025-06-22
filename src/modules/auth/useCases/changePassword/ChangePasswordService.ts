@@ -7,7 +7,6 @@ import {
   HttpStatus
 } from '../../../../utils/exceptions/HttpException';
 import moment from 'moment-timezone';
-import { WhoDoes } from '../../../../interfaces/IWhoDoes';
 import { StatusEnum } from '../../../../entities/User';
 
 class ChangePasswordService {
@@ -15,11 +14,10 @@ class ChangePasswordService {
 
   public async execute(
     data: IChangePasswordDTO,
-    whoDoes: WhoDoes
   ): Promise<Resolve> {
     await this.validateData(data);
 
-    const user = await this.repository.findByEmail(whoDoes.email, true);
+    const user = await this.repository.findByEmail(data.email, true);
 
     if (!user) {
       throw new HttpException(HttpStatus.NOT_FOUND, 'e não encontrado');
@@ -32,7 +30,7 @@ class ChangePasswordService {
       );
     }
 
-    if (user.resetCode !== data.resetCode) {
+    if (String(user.resetCode) !== String(data.resetCode)) {
       throw new HttpException(
         HttpStatus.BAD_REQUEST,
         'Código de redefinição inválido'
@@ -48,7 +46,7 @@ class ChangePasswordService {
       );
     }
 
-    await this.repository.updatePassword(`${user.id}`, data.newPassword);
+    await this.repository.updatePassword(`${user.id}`, data.password);
 
     return {
       status: 200,

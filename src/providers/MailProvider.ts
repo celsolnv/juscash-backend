@@ -16,7 +16,7 @@ abstract class IMailProvider {
 }
 
 class NodemailerProvider implements IMailProvider {
-  constructor(private readonly templateProvider: ITemplateProvider) {}
+  constructor(private readonly templateProvider: ITemplateProvider) { }
 
   public async sendMail({
     to,
@@ -39,20 +39,31 @@ class NodemailerProvider implements IMailProvider {
 
     const message: Mail.Options = {
       to,
-      from: `Cáritas Mailing <${EnvSettings.SMTP_USER}>`,
+      from: `Juscash Mailing <${EnvSettings.SMTP_USER}>`,
       subject,
       html
     };
 
     const transportData: SMTPTransport.Options = {
+      service: EnvSettings.SMTP_SERVICE,
       host: EnvSettings.SMTP_HOST,
       port: +EnvSettings.SMTP_PORT,
-      secure: EnvSettings.SMTP_SECURE === 'true',
+      secure: true,
       auth: {
         user: EnvSettings.SMTP_USER,
         pass: EnvSettings.SMTP_PASSWORD
       }
     };
+
+    // const transportData: SMTPTransport.Options = {
+    //   host: EnvSettings.SMTP_HOST,
+    //   port: +EnvSettings.SMTP_PORT,
+    //   secure: EnvSettings.SMTP_SECURE === 'true',
+    //   auth: {
+    //     user: EnvSettings.SMTP_USER,
+    //     pass: EnvSettings.SMTP_PASSWORD
+    //   }
+    // };
 
     const transport = nodemailer.createTransport(transportData);
 

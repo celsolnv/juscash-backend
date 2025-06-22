@@ -7,7 +7,11 @@ abstract class IChangePasswordDTO {
 
   @IsNotEmpty({ message: 'Nova senha é obrigatória' })
   @IsString({ message: 'Nova senha inválida' })
-  newPassword: string;
+  password: string;
+
+  @IsNotEmpty({ message: 'E-mail é obrigatório' })
+  @IsString({ message: 'E-mail inválido' })
+  email: string;
 }
 
 export { IChangePasswordDTO };
