@@ -1,0 +1,40 @@
+{
+  "env": {
+    "es2021": true,
+    "node": true,
+    "jest": true
+  },
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+  "overrides": [],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": ["./tsconfig.json"],
+    "extraFileExtensions": [".json", ".png", ".pdf"]
+  },
+  "plugins": ["@typescript-eslint"],
+  "ignorePatterns": [
+    "dist/",
+    "node_modules/",
+    "**/*.sh",
+    "**/*.yml",
+    "**/*.yaml",
+    "**/*.json",
+    "**/*.md",
+    "**/*.png",
+    "**/*.jpg",
+    "**/*.jpeg",
+    "**/*.gif",
+    "**/*.svg",
+    "**/*.ico",
+    "**/*.eot",
+    "**/*.hbs",
+    "**/*.pdf"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-non-null-assertion": "off"
+  }
+}

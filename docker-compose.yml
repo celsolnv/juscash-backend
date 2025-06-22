@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: juscash
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin123
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data_new:/var/lib/mysql
+  # api:
+  #   image: juscash-api
+  #   restart: always
+  #   ports:
+  #     - "4000:3001"
+  #   depends_on:
+  #     - mysql
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   env_file:
+  #     - .env
+volumes:
+  mysql_data_new:

@@ -1,0 +1,34 @@
+{
+  "workbench.iconTheme": "material-icon-theme",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  // ignore format on save in html, css and hbs files
+  "[html]": {
+    "editor.formatOnSave": false
+  },
+  "[css]": {
+    "editor.formatOnSave": false
+  },
+  "[handlebars]": {
+    "editor.formatOnSave": false
+  },
+  "github.copilot.editor.enableAutoCompletions": true,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "package.json": ".*, server.jest.config.ts, *.md, eslint.config.*, commitlinterrc.json, prettier*, tsconfig*, vite*, pnpm-lock*, package-lock*, nodemon.*, rollup*, babel*, lintstagedrc.json, *.properties, jest.config.mjs"
+  },
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  },
+  "liveServer.settings.donotShowInfoMsg": true,
+  "cSpell.words": [
+    "juscash"
+  ]
+}

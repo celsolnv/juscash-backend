@@ -1,0 +1,33 @@
+# node modules
+node_modules
+# build path
+dist
+# environmental variables
+.env
+# yarn error log
+yarn-error.log
+# vscode config
+.vscode
+# test coverage
+coverage
+# orm config
+ormconfig.js
+# jest
+jest.config.ts
+# connection test
+src/database/connectionTest.ts
+# configs
+src/configs
+# jest config files
+jest-int.config.js
+jest-unit.config.js
+jest.config.js
+
+# ignore test files
+**/*.test.ts
+**/*.spec.ts
+
+# ignore setup jest files
+jest.global-setup.ts
+jest.global-teardown.ts
+jest.sequencer.js

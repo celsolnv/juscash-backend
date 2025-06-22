@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "es2020",
+        "module": "commonjs",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "outDir": "dist",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "strictPropertyInitialization": false,
+        "noImplicitAny": false,
+        "moduleResolution": "Node",
+        "resolveJsonModule": true,
+        "typeRoots": ["./src/@types", "/@types"],
+        "types": ["node"]
+    },
+    "baseUrl": "src",
+    "include": ["src/**/*.ts", "test/**/*.spec.ts"],
+    "exclude": ["node_modules", "server.jest.config.ts"]
+}

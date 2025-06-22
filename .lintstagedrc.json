@@ -1,0 +1,6 @@
+{
+  "*": [
+    "npx eslint --fix", "npx prettier --write",
+    "npm run test --findRelatedTests --bail --config ./jest.config.ts"
+  ]
+}
