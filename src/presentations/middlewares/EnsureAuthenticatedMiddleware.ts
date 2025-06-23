@@ -69,6 +69,7 @@ const EnsureAuthenticatedMiddleware = () => {
 
       return next();
     } catch (error) {
+      console.error('Erro no middleware de autenticação:', error);
       return send(response, {
         success: false,
         message: 'Token inválido',
