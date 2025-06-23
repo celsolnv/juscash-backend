@@ -238,6 +238,200 @@
           }
         }
       }
+    },
+    "/api/publications/create/batch": {
+      "post": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Cria publicações em lote",
+        "description": "Cria publicações em lote",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePublication"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao criar usuário"
+          }
+        }
+      }
+    },
+    "/api/publications": {
+      "get": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Lista todas as publicações",
+        "description": "Retorna uma lista paginada de publicações, com filtros opcionais por texto, datas e status.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Texto de busca opcional",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Data inicial para filtro (formato ISO 8601)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Data final para filtro (formato ISO 8601)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Status da publicação",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NEW",
+                "PUBLISHED",
+                "ARCHIVED"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Número da página para paginação",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens por página",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "default": 10
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de publicações",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAllPublications"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao listar publicações"
+          }
+        }
+      }
+    },
+    "/api/publications/{id}": {
+      "put": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Atualiza o status de uma publicação",
+        "description": "Atualiza o status de uma publicação existente pelo ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da publicação",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "NEW",
+                      "PUBLISHED",
+                      "ARCHIVED"
+                    ],
+                    "default": "NEW"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status da publicação atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePublication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao atualizar publicação"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -259,6 +453,124 @@
             "enum": [
               "active",
               "inactive"
+            ]
+          }
+        }
+      },
+      "CreatePublication": {
+        "description": "DTO para criação de uma publicação, contendo informações relevantes sobre o processo, partes envolvidas, valores e status da publicação.",
+        "properties": {
+          "case_number": {
+            "type": "string",
+            "description": "Número do processo. Opcional.",
+            "validation": [
+              "Opcional",
+              "Deve ser uma string"
+            ]
+          },
+          "plaintiff": {
+            "type": "string",
+            "description": "Nome do autor da ação. Opcional.",
+            "validation": [
+              "Opcional",
+              "Deve ser uma string"
+            ]
+          },
+          "attorney": {
+            "type": "string",
+            "description": "Nome do advogado do autor. Opcional.",
+            "validation": [
+              "Opcional",
+              "Deve ser uma string"
+            ]
+          },
+          "value_principal": {
+            "type": "string",
+            "description": "Valor principal da causa em formato decimal. Opcional.",
+            "validation": [
+              "Opcional",
+              "Deve ser um número decimal válido (ex: 1000.00)"
+            ]
+          },
+          "value_interest": {
+            "type": "string",
+            "description": "Valor dos juros em formato decimal. Opcional.",
+            "validation": [
+              "Opcional",
+              "Deve ser um número decimal válido (ex: 100.00)"
+            ]
+          },
+          "value_attorney": {
+            "type": "string",
+            "description": "Valor dos honorários advocatícios em formato decimal. Opcional.",
+            "validation": [
+              "Opcional",
+              "Deve ser um número decimal válido (ex: 200.00)"
+            ]
+          },
+          "full_text": {
+            "type": "string",
+            "description": "Texto completo da publicação. Obrigatório.",
+            "validation": [
+              "Obrigatório",
+              "Deve ser uma string"
+            ]
+          },
+          "defendant": {
+            "type": "string",
+            "description": "Nome do réu. Opcional. Valor padrão: 'Instituto Nacional do Seguro Social - INSS'.",
+            "validation": [
+              "Opcional",
+              "Deve ser uma string"
+            ]
+          },
+          "status": {
+            "type": "PublicationStatus",
+            "description": "Status da publicação. Opcional. Valor padrão: PublicationStatus.NEW.",
+            "validation": [
+              "Opcional",
+              "Deve ser um valor válido do enum PublicationStatus"
+            ]
+          },
+          "published_at": {
+            "type": "string",
+            "description": "Data de publicação. Opcional.",
+            "validation": [
+              "Opcional",
+              "Deve ser uma string"
+            ]
+          }
+        }
+      },
+      "ListAllPublications": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        ],
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "Texto de busca opcional"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Data inicial para filtro (formato ISO 8601)",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Data final para filtro (formato ISO 8601)",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da publicação",
+            "enum": [
+              "NEW",
+              "PUBLISHED",
+              "ARCHIVED"
             ]
           }
         }
