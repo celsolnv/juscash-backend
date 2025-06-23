@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   mysql:
     image: mysql:8.0
@@ -13,18 +11,21 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - mysql_data_new:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
+
   api:
-    image: juscash-api
-    restart: always
-    ports:
-      - "4000:3001"
-    depends_on:
-      - mysql
     build:
       context: .
       dockerfile: Dockerfile
+    image: juscash-api
+    container_name: juscash-api
+    restart: always
+    ports:
+      - "4000:3001"
     env_file:
       - .env
+    depends_on:
+      - mysql
+
 volumes:
-  mysql_data_new:
+  mysql_data:

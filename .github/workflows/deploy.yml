@@ -53,7 +53,7 @@ jobs:
             # 2. Atualiza código e containers
             cd "$APP_DIR"
             git pull origin main
-            docker-compose pull
+            docker-compose build
             docker-compose up -d --build
           EOF
 
