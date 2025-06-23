@@ -8,8 +8,7 @@ class FindUserController {
   public async handle(request: Request, response: Response) {
     try {
       const { id } = request.params;
-      const whoDoes = request.user;
-      const resolve = await this.findUserService.execute(id, whoDoes);
+      const resolve = await this.findUserService.execute(id);
       return send(response, resolve);
     } catch (error) {
       return error500(response, error);
