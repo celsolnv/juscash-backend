@@ -12,6 +12,8 @@ services:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - backend  # <- adicionado aqui
 
   juscash-api:
     build:
@@ -46,6 +48,8 @@ services:
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
+    networks:
+      - backend  # <- recomendável adicionar também, caso precise emitir SSL interno
 
 volumes:
   mysql_data:
