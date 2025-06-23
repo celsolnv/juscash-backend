@@ -11,8 +11,11 @@ export class ListAllPublicationController {
       const page = +(request.query.page as string) || 1;
       const limit = +(request.query.limit as string) || 10;
 
-      const { status } = request.query as {
-        status: PublicationStatus
+      const { status, startDate, endDate } = request.query as {
+        status?: PublicationStatus,
+        startDate?: string,
+        endDate?: string,
+
       };
 
       const resolve = await this.ListAllPublicationService.execute(
@@ -21,6 +24,8 @@ export class ListAllPublicationController {
           status: status ? (status as PublicationStatus) : undefined,
           page,
           limit,
+          startDate,
+          endDate,
         },
       );
       return send(response, resolve);

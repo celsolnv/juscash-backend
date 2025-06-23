@@ -54,6 +54,13 @@ export class Publication {
   })
   status: PublicationStatus;
 
+  @Column({
+    type: "date",
+    comment: "Data de publicação",
+    nullable: true,
+  })
+  published_at: string;
+
   @CreateDateColumn({ comment: "Data de criação" })
   created_at: Date;
 

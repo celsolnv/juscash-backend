@@ -15,7 +15,7 @@ export class PublicationTypeormRepository implements IPublicationRepository {
   public async listAll(
     params: IListAllPublicationsDTO,
   ): Promise<[Publication[], number]> {
-    const { search, status, page = 1, limit = 30 } = params;
+    const { search, status, page = 1, limit = 30, startDate, endDate } = params;
 
     const qb = this.publicationRepository.createQueryBuilder("publication");
 
@@ -32,6 +32,14 @@ export class PublicationTypeormRepository implements IPublicationRepository {
 
     if (status) {
       qb.andWhere("publication.status = :status", { status });
+    }
+
+    if (startDate) {
+      qb.andWhere("DATE(publication.published_at) >= DATE(:startDate)", { startDate });
+    }
+
+    if (endDate) {
+      qb.andWhere("DATE(publication.published_at) <= DATE(:endDate)", { endDate });
     }
 
     qb.orderBy("publication.created_at", "DESC");
