@@ -3,6 +3,7 @@ import { IPublicationRepository } from "../IPublicationRepository";
 import { Publication } from "../../../../entities/Publication";
 import { ICreatePublicationDto } from "../../dtos/ICreatePublicationDto";
 import { IListAllPublicationsDTO } from "../../dtos/IListAllPublicationsDto";
+import { IUpdatePublicationDto } from "../../dtos/IUpdatePublicationDto";
 
 export class PublicationTypeormRepository implements IPublicationRepository {
   private publicationRepository: Repository<Publication> = getRepository(Publication);
@@ -14,7 +15,7 @@ export class PublicationTypeormRepository implements IPublicationRepository {
   public async listAll(
     params: IListAllPublicationsDTO,
   ): Promise<[Publication[], number]> {
-    const { search, status, page, limit } = params;
+    const { search, status, page = 1, limit = 30 } = params;
 
     const qb = this.publicationRepository.createQueryBuilder("publication");
 
@@ -66,14 +67,10 @@ export class PublicationTypeormRepository implements IPublicationRepository {
     return { count: saved.length };
   }
 
-
-  public async update(id: number, data: ICreatePublicationDto): Promise<void> {
+  public async update(id: number, data: IUpdatePublicationDto): Promise<void> {
     const publication = await this.publicationRepository.preload({
       id,
       ...data,
-      value_principal: data.value_principal !== undefined ? Number(data.value_principal) : undefined,
-      value_interest: data.value_interest !== undefined ? Number(data.value_interest) : undefined,
-      value_attorney: data.value_attorney !== undefined ? Number(data.value_attorney) : undefined,
     });
 
     if (!publication) {

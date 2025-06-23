@@ -1,6 +1,7 @@
 import { Resolve } from '../../../../libs/return/index';
 import { IPublicationRepository } from '../../repositories/IPublicationRepository';
 import { IListAllPublicationsDTO } from '../../dtos/IListAllPublicationsDto';
+import PaginationProvider from '../../../../utils/helpers/PaginationHelperMethod';
 
 
 export class ListAllPublicationService {
@@ -9,11 +10,15 @@ export class ListAllPublicationService {
   ) { }
 
   public async execute(
-    data: IListAllPublicationsDTO,
+    params: IListAllPublicationsDTO,
   ): Promise<Resolve> {
 
-    const user = await this.repository.listAll(data);
-    return { status: 201, data: user, success: true };
+    const publications = await this.repository.listAll(params);
+    return PaginationProvider({
+      data: publications,
+      page: params.page,
+      limit: params.limit
+    });
   }
 }
 
