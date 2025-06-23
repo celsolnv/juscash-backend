@@ -21,11 +21,27 @@ services:
     container_name: juscash-api
     restart: always
     ports:
-      - "4000:3001"
+      - "8080:8080"
     env_file:
       - .env
     depends_on:
       - mysql
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certbot/www/:/var/www/certbot/:ro
+      - ./certbot/conf:/etc/letsencrypt/:rw
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
 
 volumes:
   mysql_data:
