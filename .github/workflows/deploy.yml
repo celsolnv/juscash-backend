@@ -10,21 +10,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      # 1. Exporta credenciais e variável AWS_REGION
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region:            us-east-1   # <- região, não AZ
+          aws-region:            us-east-1 
 
-      # 2. Login no ECR (sem inputs extras)
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # 3. Build e push (tag já apontando pro seu registry do ECR)
       - name: Build & push image
         env:
           REGISTRY:   ${{ steps.login-ecr.outputs.registry }}
@@ -34,26 +30,21 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push    $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      # 4. Deploy na EC2 via SSH
       - name: Deploy to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          HOST:        ${{ secrets.EC2_HOST }}   # ec2-3-83-173-255.compute-1.amazonaws.com
+          HOST:        ${{ secrets.EC2_HOST }}   
           USER: ubuntu
         run: |
           echo "$PRIVATE_KEY" | tr -d '\r' > key
           chmod 600 key
 
           ssh -o StrictHostKeyChecking=no -i key $USER@$HOST <<'EOF'
-            set -e   # Pare na primeira falha
-
-            # 1. Define pasta do app
-            APP_DIR=/home/ubuntu/juscash   # <-- ajuste para seu caso
-
-            # 2. Atualiza código e containers
+            set -e 
+            APP_DIR=/home/ubuntu/juscash  
             cd "$APP_DIR"
             git pull origin main
             docker-compose build
-            docker-compose up -d --build
+            docker-compose up -d
           EOF
 
