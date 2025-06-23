@@ -2,56 +2,49 @@ name: Deploy to AWS EC2 with Docker Compose
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print environment variables
-        run: |
-          echo "EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}"
-          echo "EC2_HOST: ${{ secrets.EC2_HOST }}"
-          echo "DB_USER: ${{ secrets.DB_USER }}"
-          echo "DB_PASSWORD: ${{ secrets.DB_PASSWORD }}"
-          echo "DB_URL: ${{ secrets.DB_URL }}"
-          echo "NODE_ENV: ${{ secrets.NODE_ENV }}"
+      - uses: actions/checkout@v4
 
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
+      # 1. Exporta credenciais e variável AWS_REGION
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          region: us-east-1a
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            us-east-1   # <- região, não AZ
 
-      - name: Build and push Docker image
+      # 2. Login no ECR (sem inputs extras)
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # 3. Build e push (tag já apontando pro seu registry do ECR)
+      - name: Build & push image
+        env:
+          REGISTRY:   ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: my-app
+          IMAGE_TAG:  ${{ github.sha }}
         run: |
-          docker-compose build
-          docker-compose push
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push    $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
+      # 4. Deploy na EC2 via SSH
       - name: Deploy to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
+          HOST:        ${{ secrets.EC2_HOST }}
           USER: ec2-user
         run: |
-          echo "$PRIVATE_KEY" > private_key
-          chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST <<EOF
+          echo "$PRIVATE_KEY" > key && chmod 600 key
+          ssh -o StrictHostKeyChecking=no -i key $USER@$HOST <<'EOF'
             cd /path/to/your/app
             git pull origin main
-            docker-compose down
-            docker-compose pull
-            docker-compose up -d --build
+            docker compose pull
+            docker compose up -d --build
           EOF
-env:
-  PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-  HOST: ${{ secrets.EC2_HOST }}
-  DB_URL: ${{ secrets.DB_URL }}
-  NODE_ENV: ${{ secrets.NODE_ENV }}
