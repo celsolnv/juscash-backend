@@ -2,8 +2,8 @@ import {
   IsString,
   IsOptional,
   IsEnum,
-  IsNumberString,
   IsNotEmpty,
+  Matches,
 } from "class-validator";
 import { PublicationStatus } from "../../../entities/Publication";
 
@@ -21,15 +21,21 @@ export class ICreatePublicationDto {
   attorney?: string;
 
   @IsOptional()
-  @IsNumberString()
+  @Matches(/^\d+(\.\d{1,2})?$/, {
+    message: "value_principal must be a valid decimal number",
+  })
   value_principal?: string;
 
   @IsOptional()
-  @IsNumberString()
+  @Matches(/^\d+(\.\d{1,2})?$/, {
+    message: "value_interest must be a valid decimal number",
+  })
   value_interest?: string;
 
   @IsOptional()
-  @IsNumberString()
+  @Matches(/^\d+(\.\d{1,2})?$/, {
+    message: "value_attorney must be a valid decimal number",
+  })
   value_attorney?: string;
 
   @IsNotEmpty()

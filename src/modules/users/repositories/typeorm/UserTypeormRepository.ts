@@ -35,18 +35,8 @@ export class UserTypeormRepository implements IUserRepository {
   ): Promise<User | undefined> {
     const qb = this.userRepository.createQueryBuilder('user');
 
-    qb.leftJoinAndSelect('user.regions', 'regions');
-    qb.leftJoinAndSelect('user.memberEntities', 'memberEntities');
-
     qb.where('user.id = :id', { id });
 
-    qb.select([
-      'user',
-      'regions.id',
-      'regions.name',
-      'memberEntities.id',
-      'memberEntities.name'
-    ]);
 
     return qb.getOne();
   }

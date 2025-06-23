@@ -52,6 +52,21 @@ export class PublicationTypeormRepository implements IPublicationRepository {
     return { id: saved.id };
   }
 
+  public async createBatch(data: ICreatePublicationDto[]): Promise<{ count: number }> {
+    const publications = data.map((item) =>
+      this.publicationRepository.create({
+        ...item,
+        value_principal: item.value_principal !== undefined ? Number(item.value_principal) : undefined,
+        value_interest: item.value_interest !== undefined ? Number(item.value_interest) : undefined,
+        value_attorney: item.value_attorney !== undefined ? Number(item.value_attorney) : undefined,
+      })
+    );
+
+    const saved = await this.publicationRepository.save(publications);
+    return { count: saved.length };
+  }
+
+
   public async update(id: number, data: ICreatePublicationDto): Promise<void> {
     const publication = await this.publicationRepository.preload({
       id,

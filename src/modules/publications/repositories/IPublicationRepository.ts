@@ -8,6 +8,7 @@ export abstract class IPublicationRepository {
     params: IListAllPublicationsDTO,
   ): Promise<[Publication[], number]>;
   abstract create(data: ICreatePublicationDto): Promise<{ id: number }>;
+  abstract createBatch(data: ICreatePublicationDto[]): Promise<{ count: number }>;
   abstract update(id: number, data: ICreatePublicationDto): Promise<void>;
 
 }
