@@ -38,13 +38,33 @@ jobs:
       - name: Deploy to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          HOST:        ${{ secrets.EC2_HOST }}
+          HOST:        ${{ secrets.EC2_HOST }}   # ec2-3-83-173-255.compute-1.amazonaws.com
           USER: ubuntu
         run: |
-          echo "$PRIVATE_KEY" > key && chmod 600 key
+          echo "$PRIVATE_KEY" | tr -d '\r' > key
+          chmod 600 key
+
           ssh -o StrictHostKeyChecking=no -i key $USER@$HOST <<'EOF'
-            cd /path/to/your/app
+            set -e   # Pare na primeira falha
+
+            # 1. Instala o Docker Compose v2 (plugin) se ainda não tiver
+            if ! docker compose version >/dev/null 2>&1; then
+              sudo apt-get update -y
+              sudo apt-get install -y docker-compose-plugin
+            fi
+
+            # 2. Define pasta do app
+            APP_DIR=/home/ubuntu/juscash   # <-- ajuste para seu caso
+
+            # 3. Clona se não existir
+            if [ ! -d "$APP_DIR/.git" ]; then
+              git clone https://github.com/celsolnv/juscash-backend.git "$APP_DIR"
+            fi
+
+            # 4. Atualiza código e containers
+            cd "$APP_DIR"
             git pull origin main
             docker compose pull
             docker compose up -d --build
           EOF
+
