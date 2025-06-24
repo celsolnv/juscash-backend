@@ -66,7 +66,7 @@ class RedefinePasswordService {
       resetToken: token
     });
 
-    const logoUrl = `https://www.juscash.com.br/wp-content/themes/s3/assets/img/logo-white.svg`;
+    const logoUrl = `https://www.juscash-test.site/files/logo.png`;
 
     const variables = {
       name: user.name,
