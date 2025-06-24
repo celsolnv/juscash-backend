@@ -13,12 +13,7 @@ const app = express();
 dotenv.config();
 
 app.use(express.json());
-app.use(cors(
-  {
-    origin: 'https://visionary-blini-7f3223.netlify.app',
-    credentials: true
-  }
-));
+app.use(cors());
 
 app.use('/api', routes);
 
