@@ -10,7 +10,6 @@ yarn-error.log
 coverage
 #package-lock.json
 package-lock.json
-#files
-files
+
 .scannerwork
 mysql-docker-compose.yml
